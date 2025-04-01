@@ -1,0 +1,257 @@
+/* Calculator-style theme for DrugWars */
+
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background-color: #000;
+}
+
+.calculator-body {
+  background-image: url('/background.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 1024px;
+  height: 768px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.calculator-screen {
+  width: 620px;
+  padding: 10px;
+  font-family: 'VT323', monospace;
+  color: #000;
+  margin: 0 auto;
+  position: relative;
+  top: 164px;
+  left: 0px;
+  font-size: 20px;
+  line-height: 1.2;
+  display: flex;
+  flex-direction: column;
+  text-shadow: 0px 0px 1px rgba(0, 0, 0, 0.3);
+  justify-content: flex-start;
+  align-items: stretch;
+  overflow-y: auto;
+}
+
+.calculator-title {
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.calculator-text {
+  font-size: 20px;
+  margin-bottom: 3px;
+}
+
+.calculator-text-uppercase {
+  text-transform: uppercase;
+}
+
+.calculator-menu {
+  margin-top: 8px;
+  flex-grow: 1;
+}
+
+.calculator-menu-item {
+  display: flex;
+  font-size: 20px;
+  margin-bottom: 2px;
+  cursor: pointer;
+  padding: 1px 2px;
+}
+
+.calculator-menu-item:hover {
+  background-color: #908853;
+}
+
+.calculator-menu-number {
+  width: 25px;
+  font-weight: bold;
+}
+
+/* Button styles */
+.calculator-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.calculator-button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+  cursor: pointer;
+  min-width: 60px;
+  transition: all 0.1s ease;
+  background-color: #222623;
+  color: #cecece;
+}
+
+.calculator-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.calculator-button:active {
+  transform: scale(0.95);
+}
+
+.calculator-button-row {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.action-button, .calculator-button.action-button {
+  background-color: #2a4931;
+  color: #cecece;
+}
+
+.action-button:hover, .calculator-button.action-button:hover {
+  background-color: #2a4931;
+  color: #cecece;
+}
+
+.back-button, .calculator-button.back-button {
+  background-color: #333634;
+  color: white;
+}
+
+.back-button:hover, .calculator-button.back-button:hover {
+  background-color: #222623;
+  color: #cecece;
+}
+
+.increment-button, .calculator-button.increment-button {
+  background-color: #222623;
+  color: white;
+}
+
+.increment-button:hover, .calculator-button.increment-button:hover {
+  background-color: #222623;
+  color: #cecece;
+}
+
+.decrement-button, .calculator-button.decrement-button {
+  background-color: #222623;
+  color: white;
+}
+
+.decrement-button:hover, .calculator-button.decrement-button:hover {
+  background-color: #222623;
+  color: #cecece;
+}
+
+.max-button, .calculator-button.max-button {
+  background-color: #222623;
+  color: white;
+}
+
+.max-button:hover, .calculator-button.max-button:hover {
+  background-color: #222623;
+  color: #cecece;
+}
+
+/* Blinking cursor effect */
+.calculator-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 18px;
+  background-color: #000;
+  margin-left: 2px;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Calculator note */
+.calculator-note {
+  font-family: 'VT323', monospace;
+  font-size: 14px;
+  color: #cecece;
+  text-align: center;
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.calculator-note a {
+  color: #cecece;
+  text-decoration: underline;
+}
+
+.calculator-note a:hover {
+  color: white;
+}
+
+/* Game over screen */
+.game-over-screen {
+  text-align: center;
+  padding: 20px;
+}
+
+.game-over-title {
+  font-size: 28px;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+}
+
+.game-over-score {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.game-over-message {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+/* Message display */
+.message-display {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding: 3px;
+  border-radius: 3px;
+  background-color: rgba(138, 154, 110, 0.2);
+}
+
+/* Responsive adjustments */
+@media (max-height: 768px) {
+  .calculator-body {
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+}
+
+@media (max-height: 650px) {
+  .calculator-body {
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+}
