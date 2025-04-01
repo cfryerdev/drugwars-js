@@ -1,7 +1,7 @@
 {
   "name": "drugwars-js",
   "private": true,
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "A modern JavaScript remake of the classic text-based strategy game 'Drug Wars' from the 1980s.",
   "type": "module",
   "scripts": {
