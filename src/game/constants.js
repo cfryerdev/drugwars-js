@@ -17,7 +17,7 @@ export const DRUGS = [
   { id: 'heroin', name: 'Heroin', minPrice: 5000, maxPrice: 9000, volatility: 1.8 },
   { id: 'acid', name: 'Acid', minPrice: 1000, maxPrice: 4000, volatility: 2.0 },
   { id: 'speed', name: 'Speed', minPrice: 250, maxPrice: 1500, volatility: 1.3 },
-  { id: 'ludes', name: 'Ludes', minPrice: 10, maxPrice: 60, volatility: 1.1 },
+  { id: 'ludes', name: 'Ludes', minPrice: 10, maxPrice: 40, volatility: 1.1 },
 ];
 
 // Random events that can occur during gameplay
@@ -83,7 +83,7 @@ export const RANDOM_EVENTS = [
         ...state,
         maxInventorySpace: newMaxInventorySpace,
         foundTrenchcoat: true, // Mark that the player has found the trenchcoat
-        messages: [...state.messages, `You found a new trenchcoat with more pockets! Your inventory capacity increased to ${newMaxInventorySpace}.`]
+        messages: [...state.messages, `You found a new trenchcoat with more pockets!`]
       };
     }
   },
@@ -93,10 +93,55 @@ export const RANDOM_EVENTS = [
     description: 'There\'s a sudden spike in drug prices!',
     probability: 0.1,
     effect: (state) => {
-      // Logic to handle price spike
+      // Create new market prices with a significant increase (60-100% more)
+      const increaseFactor = 1.6 + Math.random() * 0.4; // Random increase between 60-100%
+      const spikePrices = {};
+      
+      // Apply increase to all drugs
+      Object.keys(state.marketPrices).forEach(drugId => {
+        // Calculate increased price, ensuring it doesn't go above the drug's maximum price
+        const drug = DRUGS.find(d => d.id === drugId);
+        if (drug) {
+          const increasedPrice = Math.round(state.marketPrices[drugId] * increaseFactor);
+          spikePrices[drugId] = Math.min(drug.maxPrice * 1.5, increasedPrice); // Allow up to 50% above normal max
+        } else {
+          spikePrices[drugId] = state.marketPrices[drugId];
+        }
+      });
+      
       return {
         ...state,
-        messages: [...state.messages, 'Drug prices have spiked in the area!']
+        marketPrices: spikePrices,
+        messages: [...state.messages, 'Drug prices have spiked in the area! Great time to sell!']
+      };
+    }
+  },
+  {
+    id: 'price_plummet',
+    name: 'Price Plummet',
+    description: 'Drug prices have suddenly plummeted!',
+    probability: 0.1,
+    effect: (state) => {
+      // Create new market prices with a significant discount (40-60% off)
+      const discountFactor = 0.4 + Math.random() * 0.2; // Random discount between 40-60%
+      const plummetPrices = {};
+      
+      // Apply discount to all drugs
+      Object.keys(state.marketPrices).forEach(drugId => {
+        // Calculate discounted price, ensuring it doesn't go below the drug's minimum price
+        const drug = DRUGS.find(d => d.id === drugId);
+        if (drug) {
+          const discountedPrice = Math.round(state.marketPrices[drugId] * discountFactor);
+          plummetPrices[drugId] = Math.max(drug.minPrice, discountedPrice);
+        } else {
+          plummetPrices[drugId] = state.marketPrices[drugId];
+        }
+      });
+      
+      return {
+        ...state,
+        marketPrices: plummetPrices,
+        messages: [...state.messages, 'Drug prices have plummeted! Now is a great time to buy!']
       };
     }
   },
