@@ -66,6 +66,28 @@ export const RANDOM_EVENTS = [
     }
   },
   {
+    id: 'new_trenchcoat',
+    name: 'New Trenchcoat',
+    description: 'You found a new trenchcoat with more pockets! Your inventory capacity increases.',
+    probability: 0.05, // 5% chance per day
+    effect: (state) => {
+      // Skip this event if the player has already found a trenchcoat
+      if (state.foundTrenchcoat) {
+        return state;
+      }
+      
+      // Increase inventory capacity by 100
+      const newMaxInventorySpace = state.maxInventorySpace + 100;
+      
+      return {
+        ...state,
+        maxInventorySpace: newMaxInventorySpace,
+        foundTrenchcoat: true, // Mark that the player has found the trenchcoat
+        messages: [...state.messages, `You found a new trenchcoat with more pockets! Your inventory capacity increased to ${newMaxInventorySpace}.`]
+      };
+    }
+  },
+  {
     id: 'price_spike',
     name: 'Price Spike',
     description: 'There\'s a sudden spike in drug prices!',
