@@ -1,6 +1,6 @@
 # DrugWars JS
 
-<img src="https://img.shields.io/badge/version-1.2.0-blue" alt="Version 1.2.0" /> <img src="https://img.shields.io/badge/react-19.0.0-61DAFB" alt="React 19" /> <img src="https://img.shields.io/badge/license-MIT-green" alt="MIT License" />
+<img src="https://img.shields.io/badge/version-1.3.0-blue" alt="Version 1.3.0" /> <img src="https://img.shields.io/badge/react-19.0.0-61DAFB" alt="React 19" /> <img src="https://img.shields.io/badge/license-MIT-green" alt="MIT License" />
 
 A modern JavaScript remake of the classic text-based strategy game "Drug Wars" from the 1980s. Buy low, sell high, and try to make as much money as possible before your time runs out—all while avoiding the dangers of the streets.
 
@@ -97,6 +97,7 @@ During gameplay, you may encounter random events:
 - Police Bust: Lose some drugs and cash
 - Price Spike: Drug prices suddenly increase
 - Mugging: Lose some cash
+- New Trenchcoat: Find a new trenchcoat that increases your inventory capacity by 100 units (can only happen once per game)
 
 ## 🛠️ Technical Details
 

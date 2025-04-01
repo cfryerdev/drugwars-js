@@ -310,7 +310,8 @@ export const initializeGame = () => {
     },
     marketPrices: generateMarketPrices(startingLocation, 1),
     messages: ["Welcome to DrugWars! You start in the Bronx with $2000 cash and $5500 debt."],
-    gameOver: false
+    gameOver: false,
+    foundTrenchcoat: false // Track if the player has found the special trenchcoat
   };
 };
 

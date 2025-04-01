@@ -68,8 +68,8 @@ export const RANDOM_EVENTS = [
   {
     id: 'new_trenchcoat',
     name: 'New Trenchcoat',
-    description: 'You found a new trenchcoat with more pockets! Your inventory capacity increases.',
-    probability: 0.05, // 5% chance per day
+    description: 'You found a new trenchcoat with more pockets!',
+    probability: 0.5, // 5% chance per day
     effect: (state) => {
       // Skip this event if the player has already found a trenchcoat
       if (state.foundTrenchcoat) {
