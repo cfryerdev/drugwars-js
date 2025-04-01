@@ -54,6 +54,15 @@ const CalculatorGamePage = () => {
   const [loanAmount, setLoanAmount] = useState(1000);
   const [debugMode, setDebugMode] = useState(false);
   
+  // Reset drug selection when screen changes
+  useEffect(() => {
+    // If we're not on the buy or sell screen, reset the selected drug
+    if (currentScreen !== SCREENS.BUY && currentScreen !== SCREENS.SELL) {
+      setSelectedDrug(null);
+      setQuantity(1);
+    }
+  }, [currentScreen]);
+  
   // Debug menu state
   const [debugMenuScreen, setDebugMenuScreen] = useState('main');
   const [debugCashAmount, setDebugCashAmount] = useState(10000);
@@ -176,10 +185,18 @@ const CalculatorGamePage = () => {
         </div>
         
         <div className="calculator-menu">
-          <div className="calculator-menu-item" onClick={() => setCurrentScreen(SCREENS.BUY)}>
+          <div className="calculator-menu-item" onClick={() => {
+            setSelectedDrug(null);
+            setQuantity(1);
+            setCurrentScreen(SCREENS.BUY);
+          }}>
             <span className="calculator-menu-number">1:</span> BUY DRUGS
           </div>
-          <div className="calculator-menu-item" onClick={() => setCurrentScreen(SCREENS.SELL)}>
+          <div className="calculator-menu-item" onClick={() => {
+            setSelectedDrug(null);
+            setQuantity(1);
+            setCurrentScreen(SCREENS.SELL);
+          }}>
             <span className="calculator-menu-number">2:</span> SELL DRUGS
           </div>
           <div className="calculator-menu-item" onClick={() => setCurrentScreen(SCREENS.INVENTORY)}>
