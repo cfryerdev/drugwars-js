@@ -1,4 +1,5 @@
 import { DRUGS, LOCATIONS, RANDOM_EVENTS, GAME_SETTINGS, START_MESSAGE } from './constants';
+import packageInfo from '../../package.json';
 
 // Generate random prices for drugs based on location and day
 export const generateMarketPrices = (location, day) => {
@@ -265,6 +266,15 @@ export const repayDebt = (state, amount) => {
 };
 
 // Fix corrupted game state (for handling existing bugs like negative inventory)
+// Check if the game version matches the current package version
+export const checkVersionMismatch = (state) => {
+  if (!state.version || state.version !== packageInfo.version) {
+    console.log(`Version mismatch detected: Game state version ${state.version || 'undefined'} vs Package version ${packageInfo.version}`);
+    return true;
+  }
+  return false;
+};
+
 export const fixGameState = (state) => {
   // Create a fixed copy of the state
   const fixedState = { ...state };
@@ -293,6 +303,9 @@ export const fixGameState = (state) => {
   
   // Add any other state fixes here if needed
   
+  // Update the version in the fixed state
+  fixedState.version = packageInfo.version;
+  
   return fixedState;
 };
 
@@ -314,7 +327,8 @@ export const initializeGame = () => {
     marketPrices: generateMarketPrices(startingLocation, 1),
     messages: [START_MESSAGE],
     gameOver: false,
-    foundTrenchcoat: false // Track if the player has found the special trenchcoat
+    foundTrenchcoat: false, // Track if the player has found the special trenchcoat
+    version: packageInfo.version // Store the current package version
   };
 };
 

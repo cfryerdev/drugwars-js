@@ -1,7 +1,7 @@
 {
   "name": "drugwars-js",
   "private": true,
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "A modern JavaScript remake of the classic calculator strategy game 'Drug Wars' from the 1990s.",
   "type": "module",
   "scripts": {

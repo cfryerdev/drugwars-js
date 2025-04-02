@@ -12,6 +12,7 @@ import {
   depositMoney,
   withdrawMoney,
   fixGameState,
+  checkVersionMismatch,
   debugAddCash,
   debugClearDebt,
   debugSetDaysRemaining,
@@ -27,8 +28,16 @@ export const gameStateAtom = atomWithStorage('drugwars-game-state', initializeGa
     if (!storedValue) return initializeGame();
     
     try {
-      // Parse the stored value and fix any corrupted state
+      // Parse the stored value
       const parsedValue = JSON.parse(storedValue);
+      
+      // Check for version mismatch
+      if (checkVersionMismatch(parsedValue)) {
+        console.log('Version mismatch detected. Resetting game state.');
+        return initializeGame();
+      }
+      
+      // Fix any corrupted state
       return fixGameState(parsedValue);
     } catch (e) {
       console.error('Error parsing game state:', e);
