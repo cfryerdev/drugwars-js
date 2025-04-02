@@ -1,6 +1,6 @@
 # DrugWars JS
 
-<img src="https://img.shields.io/badge/version-1.6.0-blue" alt="Version 1.6.0" /> <img src="https://img.shields.io/badge/react-19.0.0-61DAFB" alt="React 19" /> <img src="https://img.shields.io/badge/license-MIT-green" alt="MIT License" />
+<img src="https://img.shields.io/badge/version-1.6.2-blue" alt="Version 1.6.2" /> <img src="https://img.shields.io/badge/react-19.0.0-61DAFB" alt="React 19" /> <img src="https://img.shields.io/badge/license-MIT-green" alt="MIT License" />
 
 A modern JavaScript remake of the classic calculator strategy game "Drug Wars" from the 1990s. Buy low, sell high, and try to make as much money as possible before your time runs out—all while avoiding the dangers of the streets.
 
