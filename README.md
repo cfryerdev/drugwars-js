@@ -1,8 +1,8 @@
 # DrugWars JS
 
-<img src="https://img.shields.io/badge/version-1.4.0-blue" alt="Version 1.4.0" /> <img src="https://img.shields.io/badge/react-19.0.0-61DAFB" alt="React 19" /> <img src="https://img.shields.io/badge/license-MIT-green" alt="MIT License" />
+<img src="https://img.shields.io/badge/version-1.5.1-blue" alt="Version 1.5.1" /> <img src="https://img.shields.io/badge/react-19.0.0-61DAFB" alt="React 19" /> <img src="https://img.shields.io/badge/license-MIT-green" alt="MIT License" />
 
-A modern JavaScript remake of the classic text-based strategy game "Drug Wars" from the 1980s. Buy low, sell high, and try to make as much money as possible before your time runs out—all while avoiding the dangers of the streets.
+A modern JavaScript remake of the classic calculator strategy game "Drug Wars" from the 1990s. Buy low, sell high, and try to make as much money as possible before your time runs out—all while avoiding the dangers of the streets.
 
 ![DrugWars JS Screenshot](screenshot.png)
 
@@ -23,6 +23,7 @@ You start with a small amount of cash and a debt to the loan shark. You have 30 
   - Price fluctuations based on location and market conditions
   - Manage inventory space in your "trenchcoat"
   - Deal with loan sharks to borrow money or pay off debt
+  - Use the bank to protect your money from theft
 - **Random Events**: Face unexpected situations like police busts, price spikes, and muggings
 - **State Management**: Uses Jotai for efficient state management with persistence
 - **Debug Mode**: Press F1 to access debug features (for development and testing)
@@ -94,11 +95,26 @@ Each location has different price patterns and risk levels.
 
 ### Random Events
 During gameplay, you may encounter random events:
-- Police Bust: Lose some drugs and cash
+- Police Bust: Lose some drugs and cash (money in the bank is safe)
 - Price Spike: Drug prices suddenly increase, sell everything you have!
 - Price Plummet: Drug prices suddenly drop by 40-60%, great time to buy!
-- Mugging: Lose some cash
+- Mugging: Lose some cash (money in the bank is safe)
 - New Trenchcoat: Find a new trenchcoat that increases your inventory capacity by 100 units (can only happen once per game)
+
+### Buying and Selling Drugs
+You can buy drugs at the current market price and sell them later for a profit. Each drug has its own price range and volatility. Prices vary by location and day.
+
+### Inventory Management
+Your trenchcoat has limited space (initially 100 units). You can find a new trenchcoat that increases your capacity by 100 units.
+
+### Loan Shark
+You start the game with debt to a loan shark. You can borrow more money or repay your debt at any time. Interest accrues daily at 10%.
+
+### Bank
+The bank allows you to deposit your cash for safekeeping. Money in the bank is protected from police busts and muggings, adding a strategic element to your cash management. You can deposit and withdraw money at any time.
+
+### Travel
+You can travel between different locations in NYC. Each travel takes one day, and prices may change when you arrive at a new location.
 
 ## 🛠️ Technical Details
 
