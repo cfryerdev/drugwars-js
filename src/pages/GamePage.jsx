@@ -4,6 +4,7 @@ import {
   gameStateAtom,
   dayAtom,
   cashAtom,
+  bankBalanceAtom,
   debtAtom,
   currentLocationAtom,
   inventoryAtom,
@@ -19,6 +20,8 @@ import {
   payDebtAtom,
   borrowMoneyAtom,
   repayDebtAtom,
+  depositMoneyAtom,
+  withdrawMoneyAtom,
   resetGameAtom,
   fixStateAtom,
   addMessageAtom,
@@ -40,6 +43,7 @@ const SCREENS = {
   SELL: 'sell',
   INVENTORY: 'inventory',
   LOAN_SHARK: 'loanShark',
+  BANK: 'bank',
   GAME_OVER: 'gameOver',
   DEBUG_MENU: 'debugMenu'
 };
@@ -48,10 +52,11 @@ const CalculatorGamePage = () => {
   // Screen state
   const [currentScreen, setCurrentScreen] = useState(SCREENS.MAIN);
   const [selectedDrug, setSelectedDrug] = useState(null);
-  const [quantity, setQuantity] = useState(1);
-  const [paymentAmount, setPaymentAmount] = useState(0);
+  const [quantity, setQuantity] = useState(0);
   const [loanAction, setLoanAction] = useState(null);
-  const [loanAmount, setLoanAmount] = useState(1000);
+  const [loanAmount, setLoanAmount] = useState(0);
+  const [bankAction, setBankAction] = useState(null);
+  const [bankAmount, setBankAmount] = useState(0);
   const [debugMode, setDebugMode] = useState(false);
   
   // Reset drug selection when screen changes
@@ -59,7 +64,7 @@ const CalculatorGamePage = () => {
     // If we're not on the buy or sell screen, reset the selected drug
     if (currentScreen !== SCREENS.BUY && currentScreen !== SCREENS.SELL) {
       setSelectedDrug(null);
-      setQuantity(1);
+      setQuantity(0);
     }
   }, [currentScreen]);
   
@@ -72,15 +77,16 @@ const CalculatorGamePage = () => {
   const [debugTrenchcoatSpace, setDebugTrenchcoatSpace] = useState(100);
   
   // Game state atoms
-  const [cash] = useAtom(cashAtom);
-  const [debt] = useAtom(debtAtom);
   const [day] = useAtom(dayAtom);
+  const [maxDays] = useAtom(maxDaysAtom);
+  const [cash] = useAtom(cashAtom);
+  const [bankBalance] = useAtom(bankBalanceAtom);
+  const [debt] = useAtom(debtAtom);
   const [currentLocation] = useAtom(currentLocationAtom);
   const [marketPrices] = useAtom(marketPricesAtom);
   const [inventory] = useAtom(inventoryAtom);
   const [messages] = useAtom(messagesAtom);
   const [gameOver] = useAtom(gameOverAtom);
-  const [maxDays] = useAtom(maxDaysAtom);
   const [maxInventorySpace] = useAtom(maxInventorySpaceAtom);
   
   // Get location name from location ID
@@ -95,6 +101,8 @@ const CalculatorGamePage = () => {
   const [, payDebt] = useAtom(payDebtAtom);
   const [, borrowMoney] = useAtom(borrowMoneyAtom);
   const [, repayDebt] = useAtom(repayDebtAtom);
+  const [, depositMoney] = useAtom(depositMoneyAtom);
+  const [, withdrawMoney] = useAtom(withdrawMoneyAtom);
   const [, fixState] = useAtom(fixStateAtom);
   const [, addMessage] = useAtom(addMessageAtom);
   const [, clearMessages] = useAtom(clearMessagesAtom);
@@ -108,7 +116,7 @@ const CalculatorGamePage = () => {
   const handleBuy = () => {
     if (selectedDrug && quantity > 0) {
       buyDrug({ drugId: selectedDrug, quantity: parseInt(quantity) });
-      setQuantity(1);
+      setQuantity(0);
       setCurrentScreen(SCREENS.MAIN);
     }
   };
@@ -117,7 +125,7 @@ const CalculatorGamePage = () => {
   const handleSell = () => {
     if (selectedDrug && quantity > 0) {
       sellDrug({ drugId: selectedDrug, quantity: parseInt(quantity) });
-      setQuantity(1);
+      setQuantity(0);
       setCurrentScreen(SCREENS.MAIN);
     }
   };
@@ -194,10 +202,10 @@ const CalculatorGamePage = () => {
       <>
         <div className="calculator-title">DRUGWARS!</div>
         <div className="calculator-text">
-          DAY: {day}/{maxDays} | CASH: ${cash}
+          DAY: {day}/{maxDays} | LOCATION: {locationName}
         </div>
         <div className="calculator-text">
-          DEBT: ${debt} | LOCATION: {locationName}
+          DEBT: ${debt} | CASH: ${cash} | BANK: ${bankBalance}
         </div>
         <div className="calculator-text">
           INVENTORY: {inventory.total}/{maxInventorySpace}
@@ -206,14 +214,14 @@ const CalculatorGamePage = () => {
         <div className="calculator-menu">
           <div className="calculator-menu-item" onClick={() => {
             setSelectedDrug(null);
-            setQuantity(1);
+            setQuantity(0);
             setCurrentScreen(SCREENS.BUY);
           }}>
             <span className="calculator-menu-number">1:</span> BUY DRUGS
           </div>
           <div className="calculator-menu-item" onClick={() => {
             setSelectedDrug(null);
-            setQuantity(1);
+            setQuantity(0);
             setCurrentScreen(SCREENS.SELL);
           }}>
             <span className="calculator-menu-number">2:</span> SELL DRUGS
@@ -227,12 +235,15 @@ const CalculatorGamePage = () => {
           <div className="calculator-menu-item" onClick={() => setCurrentScreen(SCREENS.LOAN_SHARK)}>
             <span className="calculator-menu-number">5:</span> LOAN SHARK
           </div>
+          <div className="calculator-menu-item" onClick={() => setCurrentScreen(SCREENS.BANK)}>
+            <span className="calculator-menu-number">6:</span> BANK
+          </div>
           <div className="calculator-menu-item" onClick={handleEndDay}>
-            <span className="calculator-menu-number">6:</span> END DAY
+            <span className="calculator-menu-number">7:</span> END DAY
           </div>
           {debugMode && (
             <div className="calculator-menu-item" onClick={() => setCurrentScreen(SCREENS.DEBUG_MENU)}>
-              <span className="calculator-menu-number">7:</span> DEBUG MENU
+              <span className="calculator-menu-number">8:</span> DEBUG MENU
             </div>
           )}
         </div>
@@ -340,15 +351,15 @@ const CalculatorGamePage = () => {
           <div className="calculator-buttons">
             <button 
               className="calculator-button decrement-button"
-              onClick={() => setQuantity(Math.max(1, quantity - 1))}
-              disabled={quantity <= 1}
+              onClick={() => setQuantity(Math.max(0, quantity - 1))}
+              disabled={quantity <= 0}
             >
               -1
             </button>
             <button 
               className="calculator-button decrement-button"
-              onClick={() => setQuantity(Math.max(1, quantity - 10))}
-              disabled={quantity <= 1}
+              onClick={() => setQuantity(Math.max(0, quantity - 10))}
+              disabled={quantity <= 0}
             >
               -10
             </button>
@@ -391,7 +402,7 @@ const CalculatorGamePage = () => {
           className="calculator-button back-button"
           onClick={() => {
             setSelectedDrug(null);
-            setQuantity(1);
+            setQuantity(0);
             setCurrentScreen(SCREENS.MAIN);
           }}
         >
@@ -450,15 +461,15 @@ const CalculatorGamePage = () => {
           <div className="calculator-buttons">
             <button 
               className="calculator-button decrement-button"
-              onClick={() => setQuantity(Math.max(1, quantity - 1))}
-              disabled={quantity <= 1}
+              onClick={() => setQuantity(Math.max(0, quantity - 1))}
+              disabled={quantity <= 0}
             >
               -1
             </button>
             <button 
               className="calculator-button decrement-button"
-              onClick={() => setQuantity(Math.max(1, quantity - 10))}
-              disabled={quantity <= 1}
+              onClick={() => setQuantity(Math.max(0, quantity - 10))}
+              disabled={quantity <= 0}
             >
               -10
             </button>
@@ -501,7 +512,7 @@ const CalculatorGamePage = () => {
           className="calculator-button back-button"
           onClick={() => {
             setSelectedDrug(null);
-            setQuantity(1);
+            setQuantity(0);
             setCurrentScreen(SCREENS.MAIN);
           }}
         >
@@ -568,7 +579,7 @@ const CalculatorGamePage = () => {
             className="calculator-menu-item" 
             onClick={() => {
               setLoanAction('borrow');
-              setLoanAmount(1000); // Default to 1000 for borrowing
+              setLoanAmount(0); // Default to 0 for borrowing
             }}
           >
             <span className="calculator-menu-number">1:</span>
@@ -578,8 +589,7 @@ const CalculatorGamePage = () => {
             className="calculator-menu-item" 
             onClick={() => {
               setLoanAction('repay');
-              // Set a reasonable default for repaying - either the full debt or all cash, whichever is smaller
-              setLoanAmount(Math.min(debt, cash));
+              setLoanAmount(0); // Default to 0 for repaying
             }}
           >
             <span className="calculator-menu-number">2:</span>
@@ -596,25 +606,35 @@ const CalculatorGamePage = () => {
           <div className="calculator-buttons">
             <button 
               className="calculator-button decrement-button"
-              onClick={() => setLoanAmount(Math.max(100, loanAmount - 100))}
+              onClick={() => setLoanAmount(Math.max(0, loanAmount - 100))}
+              disabled={loanAmount < 100}
             >
               -100
             </button>
             <button 
               className="calculator-button decrement-button"
-              onClick={() => setLoanAmount(Math.max(1000, loanAmount - 1000))}
+              onClick={() => setLoanAmount(Math.max(0, loanAmount - 1000))}
+              disabled={loanAmount < 1000}
             >
               -1K
             </button>
             <button 
               className="calculator-button increment-button"
               onClick={() => setLoanAmount(loanAmount + 100)}
+              disabled={
+                (loanAction === 'borrow' && loanAmount + 100 > GAME_SETTINGS.maxLoan - debt) ||
+                (loanAction === 'repay' && loanAmount + 100 > Math.min(debt, cash))
+              }
             >
               +100
             </button>
             <button 
               className="calculator-button increment-button"
               onClick={() => setLoanAmount(loanAmount + 1000)}
+              disabled={
+                (loanAction === 'borrow' && loanAmount + 1000 > GAME_SETTINGS.maxLoan - debt) ||
+                (loanAction === 'repay' && loanAmount + 1000 > Math.min(debt, cash))
+              }
             >
               +1K
             </button>
@@ -624,6 +644,7 @@ const CalculatorGamePage = () => {
               <button 
                 className="calculator-button max-button"
                 onClick={() => setLoanAmount(GAME_SETTINGS.maxLoan - debt)}
+                disabled={GAME_SETTINGS.maxLoan <= debt}
               >
                 MAX
               </button>
@@ -632,6 +653,7 @@ const CalculatorGamePage = () => {
               <button 
                 className="calculator-button max-button"
                 onClick={() => setLoanAmount(Math.min(debt, cash))}
+                disabled={debt <= 0 || cash <= 0}
               >
                 MAX
               </button>
@@ -645,7 +667,13 @@ const CalculatorGamePage = () => {
                   repayDebt(loanAmount);
                 }
                 setLoanAction(null);
+                setLoanAmount(0);
               }}
+              disabled={
+                loanAmount <= 0 || 
+                (loanAction === 'borrow' && (loanAmount > GAME_SETTINGS.maxLoan - debt)) || 
+                (loanAction === 'repay' && (loanAmount > debt || loanAmount > cash))
+              }
             >
               {loanAction === 'borrow' ? 'BORROW' : 'REPAY'}
             </button>
@@ -658,6 +686,7 @@ const CalculatorGamePage = () => {
           className="calculator-button back-button"
           onClick={() => {
             setLoanAction(null);
+            setLoanAmount(0);
             setCurrentScreen(SCREENS.MAIN);
           }}
         >
@@ -667,9 +696,132 @@ const CalculatorGamePage = () => {
     </>
   );
   
+  // Render bank screen
+  const renderBankScreen = () => {
+    return (
+      <>
+        <div className="calculator-title">BANK</div>
+        <div className="calculator-text">CASH: ${cash}</div>
+        <div className="calculator-text">BANK BALANCE: ${bankBalance}</div>
+        
+        {!bankAction && (
+          <div className="calculator-menu">
+            <div className="calculator-menu-item" onClick={() => setBankAction('deposit')}>
+              <div className="calculator-menu-number">1:</div>
+              <div>DEPOSIT MONEY</div>
+            </div>
+            <div className="calculator-menu-item" onClick={() => setBankAction('withdraw')}>
+              <div className="calculator-menu-number">2:</div>
+              <div>WITHDRAW MONEY</div>
+            </div>
+          </div>
+        )}
+        
+        {bankAction && (
+          <>
+            <div className="calculator-title">
+              {bankAction === 'deposit' ? 'DEPOSIT MONEY' : 'WITHDRAW MONEY'}
+            </div>
+            <div className="calculator-text">
+              AMOUNT: ${bankAmount}
+            </div>
+            <div className="calculator-buttons">
+              <button 
+                className="calculator-button decrement-button"
+                onClick={() => setBankAmount(Math.max(0, bankAmount - 100))}
+                disabled={bankAmount < 100}
+              >
+                -100
+              </button>
+              <button 
+                className="calculator-button decrement-button"
+                onClick={() => setBankAmount(Math.max(0, bankAmount - 1000))}
+                disabled={bankAmount < 1000}
+              >
+                -1K
+              </button>
+              <button 
+                className="calculator-button increment-button"
+                onClick={() => setBankAmount(bankAmount + 100)}
+                disabled={
+                  (bankAction === 'deposit' && bankAmount + 100 > cash) || 
+                  (bankAction === 'withdraw' && bankAmount + 100 > bankBalance)
+                }
+              >
+                +100
+              </button>
+              <button 
+                className="calculator-button increment-button"
+                onClick={() => setBankAmount(bankAmount + 1000)}
+                disabled={
+                  (bankAction === 'deposit' && bankAmount + 1000 > cash) || 
+                  (bankAction === 'withdraw' && bankAmount + 1000 > bankBalance)
+                }
+              >
+                +1K
+              </button>
+            </div>
+            <div className="calculator-buttons" style={{ marginTop: '5px' }}>
+              {bankAction === 'deposit' && (
+                <button 
+                  className="calculator-button max-button"
+                  onClick={() => setBankAmount(cash)}
+                  disabled={cash <= 0}
+                >
+                  MAX
+                </button>
+              )}
+              {bankAction === 'withdraw' && (
+                <button 
+                  className="calculator-button max-button"
+                  onClick={() => setBankAmount(bankBalance)}
+                  disabled={bankBalance <= 0}
+                >
+                  MAX
+                </button>
+              )}
+              <button 
+                className="calculator-button action-button"
+                onClick={() => {
+                  if (bankAction === 'deposit') {
+                    depositMoney(bankAmount);
+                  } else if (bankAction === 'withdraw') {
+                    withdrawMoney(bankAmount);
+                  }
+                  setBankAction(null);
+                  setBankAmount(0);
+                }}
+                disabled={
+                  bankAmount <= 0 || 
+                  (bankAction === 'deposit' && bankAmount > cash) || 
+                  (bankAction === 'withdraw' && bankAmount > bankBalance)
+                }
+              >
+                {bankAction === 'deposit' ? 'DEPOSIT' : 'WITHDRAW'}
+              </button>
+            </div>
+          </>
+        )}
+        
+        <div className="calculator-buttons" style={{ marginTop: '10px' }}>
+          <button 
+            className="calculator-button back-button"
+            onClick={() => {
+              setBankAction(null);
+              setBankAmount(0);
+              setCurrentScreen(SCREENS.MAIN);
+            }}
+          >
+            BACK
+          </button>
+        </div>
+      </>
+    );
+  };
+  
   // Render game over screen
   const renderGameOverScreen = () => {
-    const netWorth = cash - debt;
+    const netWorth = cash + bankBalance - debt;
     let message = '';
     
     if (netWorth > 50000) {
@@ -688,6 +840,7 @@ const CalculatorGamePage = () => {
       <>
         <div className="calculator-title">GAME OVER</div>
         <div className="calculator-text">FINAL CASH: ${cash}</div>
+        <div className="calculator-text">BANK BALANCE: ${bankBalance}</div>
         <div className="calculator-text">FINAL DEBT: ${debt}</div>
         <div className="calculator-text">
           NET WORTH: ${netWorth}
@@ -1072,6 +1225,8 @@ const CalculatorGamePage = () => {
         return renderTravelScreen();
       case SCREENS.LOAN_SHARK:
         return renderLoanSharkScreen();
+      case SCREENS.BANK:
+        return renderBankScreen();
       case SCREENS.DEBUG_MENU:
         return renderDebugMenu();
       case SCREENS.MAIN:

@@ -9,6 +9,8 @@ import {
   payDebt,
   borrowMoney,
   repayDebt,
+  depositMoney,
+  withdrawMoney,
   fixGameState,
   debugAddCash,
   debugClearDebt,
@@ -58,6 +60,10 @@ export const maxInventorySpaceAtom = atom(
 
 export const cashAtom = atom(
   (get) => get(gameStateAtom).cash
+);
+
+export const bankBalanceAtom = atom(
+  (get) => get(gameStateAtom).bankBalance || 0
 );
 
 export const debtAtom = atom(
@@ -175,6 +181,25 @@ export const repayDebtAtom = atom(
   (get, set, amount) => {
     const currentState = get(gameStateAtom);
     const newState = repayDebt(currentState, amount);
+    set(gameStateAtom, newState);
+  }
+);
+
+// Bank action atoms
+export const depositMoneyAtom = atom(
+  null,
+  (get, set, amount) => {
+    const currentState = get(gameStateAtom);
+    const newState = depositMoney(currentState, amount);
+    set(gameStateAtom, newState);
+  }
+);
+
+export const withdrawMoneyAtom = atom(
+  null,
+  (get, set, amount) => {
+    const currentState = get(gameStateAtom);
+    const newState = withdrawMoney(currentState, amount);
     set(gameStateAtom, newState);
   }
 );

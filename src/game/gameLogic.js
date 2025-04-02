@@ -58,7 +58,8 @@ export const buyDrug = (state, drugId, quantity) => {
   }
   
   // Check if player has enough inventory space
-  if (state.inventory.total + quantity > GAME_SETTINGS.maxInventorySpace) {
+  // Use the player's current maxInventorySpace instead of the default value
+  if (state.inventory.total + quantity > state.maxInventorySpace) {
     return {
       ...state,
       messages: [...state.messages, "You don't have enough space in your inventory."]
@@ -298,10 +299,12 @@ export const fixGameState = (state) => {
 // Initialize a new game state
 export const initializeGame = () => {
   const startingLocation = LOCATIONS[0].id;
+  
   return {
     day: 1,
     maxDays: GAME_SETTINGS.maxTurns, // Store the max days in the state
     cash: GAME_SETTINGS.startingCash,
+    bankBalance: 0, // Add bank balance
     debt: GAME_SETTINGS.startingDebt,
     currentLocation: startingLocation,
     maxInventorySpace: GAME_SETTINGS.maxInventorySpace, // Store max inventory space in state
@@ -312,6 +315,59 @@ export const initializeGame = () => {
     messages: [START_MESSAGE],
     gameOver: false,
     foundTrenchcoat: false // Track if the player has found the special trenchcoat
+  };
+};
+
+// Bank functions
+export const depositMoney = (state, amount) => {
+  // Validate amount
+  if (amount <= 0) {
+    return {
+      ...state,
+      messages: [...state.messages, "Invalid deposit amount."]
+    };
+  }
+  
+  // Check if player has enough cash
+  if (amount > state.cash) {
+    return {
+      ...state,
+      messages: [...state.messages, "You don't have enough cash to deposit that amount."]
+    };
+  }
+  
+  // Update cash and bank balance
+  return {
+    ...state,
+    cash: state.cash - amount,
+    bankBalance: state.bankBalance + amount,
+    //messages: [...state.messages, `Deposited $${amount} to your bank account.`]
+  };
+};
+
+export const withdrawMoney = (state, amount) => {
+  // Validate amount
+  if (amount <= 0) {
+    return {
+      ...state,
+      messages: [...state.messages, "Invalid withdrawal amount."]
+    };
+  }
+  
+  // Check if player has enough in bank
+  if (amount > state.bankBalance) {
+    return {
+      ...state,
+      messages: [...state.messages, "You don't have enough money in your bank account."]
+    };
+  }
+  
+  // Update cash and bank balance
+  return {
+    ...state,
+    cash: state.cash + amount,
+    bankBalance: state.bankBalance - amount,
+    //messages: [...state.messages, `Withdrew $${amount} from your bank account.`]
   };
 };
 

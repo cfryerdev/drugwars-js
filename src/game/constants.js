@@ -58,13 +58,14 @@ export const RANDOM_EVENTS = [
       updatedInventory.total = Math.max(0, updatedInventory.total - drugsLost);
       
       // Calculate cash lost (up to 20% of total)
+      // Only cash on hand can be lost, not money in the bank
       const cashLost = Math.floor(Math.random() * 0.2 * state.cash);
       
       return {
         ...state,
         inventory: updatedInventory,
         cash: state.cash - cashLost,
-        messages: [...state.messages, `Police Bust! Lost ${drugsLost} drugs and $${cashLost}.`]
+        messages: [...state.messages, `Police Bust! Lost ${drugsLost} drugs and $${cashLost}. Your money in the bank is safe.`]
       };
     }
   },
@@ -155,11 +156,12 @@ export const RANDOM_EVENTS = [
     probability: 0.07,
     effect: (state) => {
       // Logic to handle mugging
+      // Only cash on hand can be lost, not money in the bank
       const cashLost = Math.floor(Math.random() * 0.3 * state.cash);
       return {
         ...state,
         cash: state.cash - cashLost,
-        messages: [...state.messages, `You got mugged! Lost $${cashLost}.`]
+        messages: [...state.messages, `You got mugged! Lost $${cashLost}. Your money in the bank is safe.`]
       };
     }
   },
