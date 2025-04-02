@@ -54,22 +54,23 @@ You start with a small amount of cash and a debt to the loan shark. You have 30 
 ## 🎲 How to Play
 
 ### Game Objective
-Make as much money as possible within 30 days while paying off your initial debt.
+Make as much money as possible within 30 days while paying off your initial debt. Your final score includes both your cash on hand and money in the bank.
 
 ### Basic Gameplay
 1. **Buy Drugs**: Purchase drugs at low prices
 2. **Travel**: Move between different NYC boroughs
 3. **Sell Drugs**: Sell your drugs at higher prices
 4. **Manage Debt**: Pay off your loan or borrow more money
-5. **End Day**: Advance to the next day (prices will change)
-6. **Watch Out**: Random events may occur that can help or hurt you
+5. **Use the Bank**: Deposit cash to protect it from theft during random events
+6. **End Day**: Advance to the next day (prices will change)
+7. **Watch Out**: Random events may occur that can help or hurt you
 
 ### Tips for Success
 - Pay attention to price fluctuations across different locations
 - Keep an eye on your inventory space
 - Don't let your debt grow too large - the interest adds up!
 - Sometimes it's worth traveling to find better prices
-- Be careful when carrying large amounts of drugs or cash
+- Use the bank to protect your hard-earned cash from muggings and police busts
 
 ## 🧠 Game Mechanics
 
