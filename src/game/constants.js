@@ -1,5 +1,8 @@
 // Game constants for DrugWars
 
+
+export const START_MESSAGE = "Welcome to DrugWars! You start in the Bronx with $2000 cash and $5500 debt.";
+
 // Locations in the game
 export const LOCATIONS = [
   { id: 'bronx', name: 'Bronx', description: 'The Bronx is known for its tough streets and high crime rate.' },

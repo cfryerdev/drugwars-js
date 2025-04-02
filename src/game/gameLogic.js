@@ -1,4 +1,4 @@
-import { DRUGS, LOCATIONS, RANDOM_EVENTS, GAME_SETTINGS } from './constants';
+import { DRUGS, LOCATIONS, RANDOM_EVENTS, GAME_SETTINGS, START_MESSAGE } from './constants';
 
 // Generate random prices for drugs based on location and day
 export const generateMarketPrices = (location, day) => {
@@ -309,7 +309,7 @@ export const initializeGame = () => {
       total: 0
     },
     marketPrices: generateMarketPrices(startingLocation, 1),
-    messages: ["Welcome to DrugWars! You start in the Bronx with $2000 cash and $5500 debt."],
+    messages: [START_MESSAGE],
     gameOver: false,
     foundTrenchcoat: false // Track if the player has found the special trenchcoat
   };
@@ -364,6 +364,6 @@ export const debugSetInventorySpace = (state, newSpace) => {
   return {
     ...state,
     maxInventorySpace: newSpace,
-    messages: [...state.messages, `Set trenchcoat capacity to ${newSpace} units.`]
+    //messages: [...state.messages, `Set trenchcoat capacity to ${newSpace} units.`]
   };
 };

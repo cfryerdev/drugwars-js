@@ -29,7 +29,7 @@ import {
   debugAddInventoryAtom,
   debugSetInventorySpaceAtom
 } from '../atoms/gameAtoms';
-import { DRUGS, LOCATIONS, GAME_SETTINGS } from '../game/constants';
+import { DRUGS, LOCATIONS, GAME_SETTINGS, START_MESSAGE } from '../game/constants';
 
 // Main game screens
 const SCREENS = {
@@ -143,6 +143,25 @@ const CalculatorGamePage = () => {
   };
 
   const renderMessagesScreen = () => {
+    if (messages.length > 0 && messages.includes(START_MESSAGE)) {
+      return (<>
+      <div className="calculator-text">
+        {START_MESSAGE}
+      </div>
+      <img src="/splash.png" width="40%" alt="Welcome" />
+      <br />
+      <button 
+          className="calculator-button"
+          onClick={() => {
+            clearMessages();
+            setCurrentScreen(SCREENS.MAIN)}
+          }
+        >
+          START GAME
+        </button>
+      </>);
+    }
+    
     return (
       <>
         <div className="calculator-title">Notice:</div>
